@@ -47,7 +47,9 @@ const ReportPage = () => {
     const map = {};
     allDonations.forEach((d) => {
       if (!d.date) return;
-      const ym = d.date.substring(0, 7); // "YYYY-MM"
+      const parsed = dayjs(d.date);
+      if (!parsed.isValid()) return;
+      const ym = parsed.format("YYYY-MM"); // ✅ normalize เป็น YYYY-MM เสมอ
       if (!map[ym])
         map[ym] = { month: ym, totalAmount: 0, count: 0, donors: new Set() };
       map[ym].totalAmount += d.amount || 0;
@@ -67,8 +69,17 @@ const ReportPage = () => {
   // รายละเอียดของเดือนที่กด
   const detailData = useMemo(() => {
     if (!selectedMonth) return [];
+    const [selY, selM] = selectedMonth.split("-").map(Number);
     return allDonations
-      .filter((d) => d.date && d.date.startsWith(selectedMonth))
+      .filter((d) => {
+        if (!d.date) return false;
+        const parsed = dayjs(d.date);
+        return (
+          parsed.isValid() &&
+          parsed.year() === selY &&
+          parsed.month() + 1 === selM
+        );
+      })
       .sort((a, b) => b.date.localeCompare(a.date));
   }, [allDonations, selectedMonth]);
 

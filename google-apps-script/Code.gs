@@ -67,6 +67,10 @@ function doPost(e) {
         return createJsonResponse(addUser(body.data));
       case "deleteUser":
         return createJsonResponse(deleteUser(body.username));
+      case "changePassword":
+        return createJsonResponse(
+          changePassword(body.username, body.currentPassword, body.newPassword),
+        );
       default:
         return createJsonResponse({
           success: false,
@@ -157,6 +161,35 @@ function createFirstUser() {
   Logger.log("✅ สร้าง user สำเร็จ");
 }
 
+// === Date Helper ===
+// ✅ รองรับทั้ง Date object (จาก Google Sheets) และ string หลายรูปแบบ
+function formatDateSafe(raw) {
+  if (!raw) return "";
+  // ถ้าเป็น Date object จาก Google Sheets ให้ใช้ตรงๆ ได้เลย
+  if (raw instanceof Date) {
+    return Utilities.formatDate(raw, "Asia/Bangkok", "yyyy-MM-dd");
+  }
+  var str = String(raw).trim();
+  // ถ้าเป็น YYYY-MM-DD อยู่แล้ว — return ตรงๆ
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+    return str.substring(0, 10);
+  }
+  // ถ้าเป็น DD/MM/YYYY (Thai format) — แปลงเองก่อน
+  var dmy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (dmy) {
+    var d = parseInt(dmy[1]),
+      m = parseInt(dmy[2]),
+      y = parseInt(dmy[3]);
+    return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d);
+  }
+  // fallback
+  try {
+    return Utilities.formatDate(new Date(str), "Asia/Bangkok", "yyyy-MM-dd");
+  } catch (e) {
+    return str;
+  }
+}
+
 // === Donations ===
 function getDonations() {
   const sheet = getSheet("Donate");
@@ -170,15 +203,9 @@ function getDonations() {
   for (let i = 1; i < data.length; i++) {
     if (!data[i][0] && !data[i][2]) continue; // skip empty rows
     donations.push({
-      id: i + 1, // row number
+      id: i + 1,
       talent: data[i][0] || "",
-      date: data[i][1]
-        ? Utilities.formatDate(
-            new Date(data[i][1]),
-            "Asia/Bangkok",
-            "yyyy-MM-dd",
-          )
-        : "",
+      date: formatDateSafe(data[i][1]), // ✅ ใช้ helper
       name: data[i][2] || "",
       amount: parseFloat(data[i][3]) || 0,
       note: data[i][4] || "",
@@ -389,6 +416,32 @@ function deleteUser(username) {
     if (data[i][0] === username) {
       sheet.deleteRow(i + 1);
       return { success: true, message: "ลบผู้ใช้สำเร็จ" };
+    }
+  }
+
+  return { success: false, error: "ไม่พบผู้ใช้นี้" };
+}
+
+function changePassword(username, currentPassword, newPassword) {
+  if (!username || !currentPassword || !newPassword) {
+    return { success: false, error: "กรุณากรอกข้อมูลให้ครบถ้วน" };
+  }
+
+  const sheet = getSheet("User");
+  const data = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+    const sheetUser = String(data[i][0] || "").trim();
+    const sheetPass = String(data[i][1] || "").trim();
+
+    if (sheetUser === String(username).trim()) {
+      // ✅ ตรวจสอบรหัสผ่านปัจจุบันก่อน
+      if (sheetPass !== String(currentPassword).trim()) {
+        return { success: false, error: "รหัสผ่านปัจจุบันไม่ถูกต้อง" };
+      }
+      // อัปเดตรหัสผ่านใหม่ (column B = index 2)
+      sheet.getRange(i + 1, 2).setValue(String(newPassword).trim());
+      return { success: true, message: "เปลี่ยนรหัสผ่านสำเร็จ" };
     }
   }
 

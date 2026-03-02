@@ -85,6 +85,12 @@ export const apiAddUser = (data) =>
 export const apiDeleteUser = (username) =>
   fetchGAS("deleteUser", { method: "POST", body: { username } });
 
+export const apiChangePassword = (username, currentPassword, newPassword) =>
+  fetchGAS("changePassword", {
+    method: "POST",
+    body: { username, currentPassword, newPassword },
+  });
+
 // === Utilities ===
 export const formatCurrency = (amount) =>
   new Intl.NumberFormat("th-TH", {

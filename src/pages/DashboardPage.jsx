@@ -48,11 +48,20 @@ const DashboardPage = () => {
     }
   };
 
-  // ✅ กรองข้อมูลเฉพาะเดือนที่เลือก
+  // ✅ กรองข้อมูลเฉพาะเดือนที่เลือก (ใช้ dayjs compare เพื่อรองรับทุก format)
   const filtered = useMemo(() => {
     if (!selectedMonth) return allDonations;
-    const ym = selectedMonth.format("YYYY-MM");
-    return allDonations.filter((d) => d.date && d.date.startsWith(ym));
+    const selYear = selectedMonth.year();
+    const selMonth = selectedMonth.month(); // 0-indexed
+    return allDonations.filter((d) => {
+      if (!d.date) return false;
+      const parsed = dayjs(d.date);
+      return (
+        parsed.isValid() &&
+        parsed.year() === selYear &&
+        parsed.month() === selMonth
+      );
+    });
   }, [allDonations, selectedMonth]);
 
   // คำนวณ stats จาก filtered
