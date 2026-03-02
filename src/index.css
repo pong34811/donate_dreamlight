@@ -1,243 +1,206 @@
-/* Custom font import - ต้องอยู่บนสุด */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-@import "tailwindcss";
-
-/* Custom CSS Variables */
-:root {
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
-}
-
-/* Base styles */
-* {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+/* === Reset & Base === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background: #f4f5f7;
+  color: #1a1a2e;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  color: #ffffff;
 }
 
-/* Glassmorphism utilities */
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-}
-
-/* Gradient text */
-.gradient-text {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Animation utilities */
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-glow {
-
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-  }
-
-  50% {
-    box-shadow: 0 0 40px rgba(102, 126, 234, 0.6);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out forwards;
-}
-
-.animate-slide-in {
-  animation: slideIn 0.3s ease-out forwards;
-}
-
-/* Loading shimmer */
-.shimmer {
-  background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.03) 0%,
-      rgba(255, 255, 255, 0.15) 50%,
-      rgba(255, 255, 255, 0.03) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-/* Custom scrollbar */
+/* === Scrollbar === */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  background: #f0f0f0;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.5);
-  border-radius: 4px;
+  background: #d0d0d8;
+  border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.8);
+  background: #a0a0b0;
 }
 
-/* Input styles */
-input:focus,
-textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-}
-
-/* Button hover effect */
-.btn-primary {
-  background: var(--gradient-primary);
-  transition: all 0.3s ease;
+/* === Login Page === */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 0%, #e8e8ff 0%, #f4f5f7 70%);
   position: relative;
   overflow: hidden;
 }
 
-.btn-primary::before {
-  content: '';
+.login-bg-orb {
   position: absolute;
-  top: 0;
-  left: -100%;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.25;
+  animation: float 8s ease-in-out infinite;
+}
+
+.login-bg-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #6366f1, transparent);
+  top: -100px;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.login-bg-orb-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #ec4899, transparent);
+  bottom: -80px;
+  right: -80px;
+  animation-delay: 2s;
+}
+
+.login-bg-orb-3 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, #3b82f6, transparent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+  }
+}
+
+.login-card {
   width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  max-width: 420px;
+  background: #ffffff !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid #e8e8ee !important;
+  border-radius: 20px !important;
+  padding: 16px !important;
+  z-index: 1;
+  box-shadow:
+    0 8px 40px rgba(99, 102, 241, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.btn-primary:hover::before {
-  left: 100%;
+.login-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+  animation: float 4s ease-in-out infinite;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+.login-input input,
+.login-input .ant-input-password-icon {
+  background: transparent !important;
+  color: #1a1a2e !important;
 }
 
-.btn-primary:active {
-  transform: translateY(0);
+.login-input {
+  background: #f8f8fb !important;
+  border: 1px solid #e2e2ea !important;
+  border-radius: 10px !important;
+  transition: all 0.3s ease;
 }
 
-/* Toast animations */
-.toast-enter {
-  animation: slideInRight 0.3s ease-out forwards;
+.login-input:hover {
+  border-color: rgba(99, 102, 241, 0.5) !important;
 }
 
-.toast-exit {
-  animation: slideOutRight 0.3s ease-in forwards;
+.login-input:focus-within {
+  border-color: #6366f1 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12) !important;
 }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.login-button {
+  height: 48px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  background: linear-gradient(135deg, #6366f1, #818cf8) !important;
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25) !important;
+  transition: all 0.3s ease !important;
 }
 
-@keyframes slideOutRight {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateX(100%);
-  }
+.login-button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.35) !important;
 }
 
-/* Table row hover */
-.table-row-hover {
-  transition: all 0.2s ease;
+.login-button:active {
+  transform: translateY(0) !important;
 }
 
-.table-row-hover:hover {
-  background: rgba(102, 126, 234, 0.1);
-  transform: scale(1.01);
+/* === Ant Design Overrides for Light Theme === */
+.ant-layout-sider {
+  background: #ffffff !important;
+  border-right: 1px solid #f0f0f4 !important;
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .glass-card {
-    border-radius: 16px;
+.ant-card {
+  border-radius: 12px !important;
+  border: 1px solid #f0f0f4 !important;
+}
+
+.ant-table-wrapper .ant-table {
+  background: #ffffff !important;
+}
+
+.ant-statistic-content-value {
+  font-weight: 700 !important;
+}
+
+.ant-tag {
+  border-radius: 6px !important;
+}
+
+/* === Card hover effect === */
+.ant-card:hover {
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .login-card {
+    max-width: 90%;
+    margin: 16px;
   }
 }
